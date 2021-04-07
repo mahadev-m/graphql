@@ -1,8 +1,9 @@
 import React from "react";
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { Get_data } from "./queries";
 
 function App({ launches }) {
-  console.log("launches", process.env);
+  console.log("launches", launches);
   return (
     <div>
       {launches.map((launch) => {
@@ -22,31 +23,11 @@ function App({ launches }) {
 
 export async function getStaticProps() {
   const client = new ApolloClient({
-    uri: "https://api.spacex.land/graphql/",
+    uri: process.env.GRAPH_QL_API,
     cache: new InMemoryCache(),
   });
-  console.log("hello", process);
   const { data } = await client.query({
-    query: gql`
-      query GetLaunches {
-        launchesPast(limit: 115) {
-          id
-          mission_name
-          launch_date_local
-          launch_site {
-            site_name_long
-          }
-          links {
-            article_link
-            video_link
-            mission_patch
-          }
-          rocket {
-            rocket_name
-          }
-        }
-      }
-    `,
+    query: Get_data,
   });
 
   return {
